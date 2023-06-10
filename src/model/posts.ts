@@ -7,7 +7,9 @@ class PostsModel implements IPostsModel {
 	}
 
 	async getByCat(cat: string): Promise<IPost[]> {
-		return (await db.query("SELECT * FROM posts where category = $1;", [cat])).rows;
+		const catId = (await db.query("SELECT id from categories where url = $1;", [cat])).rows[0].id;
+
+		return (await db.query("SELECT * FROM posts where category = $1;", [catId])).rows;
 	}
 
 	async getAll(): Promise<IPost[]> {
