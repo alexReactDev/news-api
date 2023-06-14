@@ -47,6 +47,21 @@ class PostsController {
 
 		res.send(posts);
 	}
+
+	async getReactions(req: Request, res: Response) {
+		const id = +req.params.id;
+		let reactions;
+
+		try {
+			reactions = await model.getReactions(id);
+		}
+		catch(e: any) {
+			console.log(e)
+			return res.sendStatus(500)
+		}
+
+		return res.send(reactions);
+	}
 }
 
 export default new PostsController();

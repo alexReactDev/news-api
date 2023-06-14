@@ -92,4 +92,14 @@ export default class MockDB {
 			}
 		}
 	}
+
+	async createReactions() {
+		const posts = (await db.query(`SELECT * FROM posts;`)).rows;
+
+		for(let post of posts) {
+			const likes = _.random(999);
+			const dislikes = _.random(999);
+			await db.query(`INSERT INTO reactions (likes, dislikes, post_id) values($1, $2, $3);`, [likes, dislikes, post.id]);
+		}
+	}
 }
