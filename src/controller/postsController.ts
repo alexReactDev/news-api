@@ -21,46 +21,68 @@ class PostsController {
 
 	async getByCat(req: Request, res: Response) {
 		const cat = req.params.cat;
-		let posts;
+		const page = +(req.query.page ?? 1) - 1; //To make pages start from 0
+		const postsPerPage = +(process.env.POSTS_PER_PAGE as string);
+
+		let postsData;
 
 		try {
-			posts = await model.getByCat(cat);
+			postsData = await model.getByCat(cat, postsPerPage, postsPerPage * page);
 		}
 		catch(e) {
 			console.log(e);
 			return res.sendStatus(500);
 		}
 
-		return res.send(posts);
+		return res.send({
+			posts: postsData.posts,
+			page: page + 1,
+			total: Math.ceil(postsData.total / postsPerPage)
+		});
 	}
 
 	async getByAuthor(req: Request, res: Response) {
 		const id = +req.params.id;
-		let posts;
+		const page = +(req.query.page ?? 1) - 1; //To make pages start from 0
+		const postsPerPage = +(process.env.POSTS_PER_PAGE as string);
+
+		let postsData;
 
 		try {
-			posts = await model.getByAuthor(id);
+			postsData = await model.getByAuthor(id, postsPerPage, postsPerPage * page);
 		}
 		catch(e: any) {
 			console.log(e)
 			return res.sendStatus(500)
 		}
 	
-		return res.send(posts);
+		return res.send({
+			posts: postsData.posts,
+			page: page + 1,
+			total: Math.ceil(postsData.total / postsPerPage)
+		});
 	}
 
 	async getAll(req: Request, res: Response) {
-		let posts;
+		const page = +(req.query.page ?? 1) - 1; //To make pages start from 0
+		const postsPerPage = +(process.env.POSTS_PER_PAGE as string);
+		console.log(postsPerPage);
+
+		let postsData;
 
 		try {
-			posts = await model.getAll();
+			postsData = await model.getAll(postsPerPage, postsPerPage * page);
 		}
 		catch(e) {
 			console.log(e);
 			return res.sendStatus(500);
 		}
 
-		return res.send(posts);
+		return res.send({
+			posts: postsData.posts,
+			page: page + 1,
+			total: Math.ceil(postsData.total / postsPerPage)
+		});
 	}
 
 	async getReactions(req: Request, res: Response) {

@@ -7,12 +7,19 @@ export interface IPost {
 	category: number
 }
 
+export interface IPostsData {
+	posts: IPost[],
+	total: number
+}
+
 export interface IPostsModel {
 	getById(id: number): Promise<IPost>;
 
-	getByCat(cat: string): Promise<IPost[]>;
+	getByCat(cat: string, limit: number, offset: number): Promise<IPostsData>;
 
-	getAll(): Promise<IPost[]>
+	getByAuthor(author: number, limit: number, offset: number): Promise<IPostsData>;
+	
+	getAll(limit: number, offset: number): Promise<IPostsData>;
 }
 
 /*
