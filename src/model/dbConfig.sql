@@ -4,14 +4,25 @@ create TABLE categories(
 	url VARCHAR UNIQUE
 );
 
+create TABLE authors(
+	id SERIAL PRIMARY KEY,
+	name VARCHAR,
+	age INTEGER,
+	gender VARCHAR CHECK (gender = 'male' or gender = 'female'),
+	city VARCHAR,
+	about VARCHAR,
+	picture VARCHAR
+);
+
 create TABLE posts(
 	id SERIAL PRIMARY KEY,
 	title VARCHAR,
 	text VARCHAR,
 	created BIGINT,
-	author VARCHAR,
+	author INTEGER,
 	category INTEGER,
-	FOREIGN KEY (category) REFERENCES categories(id)
+	FOREIGN KEY (category) REFERENCES categories(id),
+	FOREIGN KEY (author) REFERENCES authors(id)
 );
 
 create TABLE comments(

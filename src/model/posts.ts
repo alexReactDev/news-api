@@ -12,6 +12,10 @@ class PostsModel implements IPostsModel {
 		return (await db.query("SELECT * FROM posts where category = $1;", [catId])).rows;
 	}
 
+	async getByAuthor(author: number): Promise<IPost[]> {
+		return (await db.query("SELECT * FROM posts where author = $1;", [author])).rows;
+	}
+
 	async getAll(): Promise<IPost[]> {
 		return (await db.query("SELECT * FROM posts;")).rows;
 	}

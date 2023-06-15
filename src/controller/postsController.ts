@@ -16,7 +16,7 @@ class PostsController {
 			return res.sendStatus(500);
 		}
 
-		res.send(post);
+		return res.send(post);
 	}
 
 	async getByCat(req: Request, res: Response) {
@@ -31,7 +31,22 @@ class PostsController {
 			return res.sendStatus(500);
 		}
 
-		res.send(posts);
+		return res.send(posts);
+	}
+
+	async getByAuthor(req: Request, res: Response) {
+		const id = +req.params.id;
+		let posts;
+
+		try {
+			posts = await model.getByAuthor(id);
+		}
+		catch(e: any) {
+			console.log(e)
+			return res.sendStatus(500)
+		}
+	
+		return res.send(posts);
 	}
 
 	async getAll(req: Request, res: Response) {
@@ -45,7 +60,7 @@ class PostsController {
 			return res.sendStatus(500);
 		}
 
-		res.send(posts);
+		return res.send(posts);
 	}
 
 	async getReactions(req: Request, res: Response) {
