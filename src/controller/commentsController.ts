@@ -6,17 +6,24 @@ import model from "../model/comments.js";
 class CommentsController {
 	async getByPost(req: Request, res: Response) {
 		const postId = +req.params.post;
-		let comments;
+		const page = +(req.query.page ?? 1) - 1; //To make pages start from 0
+		const commentsPerPage = +(process.env.COMMENTS_PER_PAGE as string);
+
+		let commentsData;
 
 		try {
-			comments = await model.getByPost(postId);
+			commentsData = await model.getByPost(postId, commentsPerPage, commentsPerPage * page);
 		}
 		catch(e) {
 			console.log(e);
-			res.sendStatus(500);
+			return res.sendStatus(500);
 		}
 
-		res.send(comments);
+		return res.send({
+			comments: commentsData.comments,
+			total: Math.ceil(commentsData.total / commentsPerPage),
+			page: page + 1
+		});
 	}
 }
 
