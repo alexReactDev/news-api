@@ -63,6 +63,28 @@ class PostsController {
 		});
 	}
 
+	async getByCollection(req: Request, res: Response) {
+		let collection = req.params.col;
+		const page = +(req.query.page ?? 1) - 1; //To make pages start from 0
+		const postsPerPage = +(process.env.POSTS_PER_PAGE as string);
+
+		let postsData;
+
+		try {
+			postsData = await model.getByCollection(collection, postsPerPage, postsPerPage * page);
+		}
+		catch(e: any) {
+			console.log(e)
+			return res.sendStatus(500)
+		}
+	
+		return res.send({
+			posts: postsData.posts,
+			page: page + 1,
+			total: Math.ceil(postsData.total / postsPerPage)
+		});
+	}
+
 	async getAll(req: Request, res: Response) {
 		const page = +(req.query.page ?? 1) - 1; //To make pages start from 0
 		const postsPerPage = +(process.env.POSTS_PER_PAGE as string);
