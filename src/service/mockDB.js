@@ -66,6 +66,8 @@ export default class MockDB {
 		for (let cat of categories) {
 			await db.query(`INSERT INTO categories (name, url) values($1, $2)`, [cat.name, cat.url]);
 		}
+
+		console.log("Created CATEGORIES");
 	}
 
 	async createPosts(postsPerCategory = 10) {
@@ -78,22 +80,56 @@ export default class MockDB {
 				const text = texts[_.random(texts.length - 1)];
 				const created = new Date().getTime() - (_.random(31556926000));
 				const author = authors[_.random(authors.length - 1)].id;
-				await db.query(`INSERT INTO posts (title, text, created, author, category) values($1, $2, $3, $4, $5)`, [title, text, created, author, cat.id]);
+				const viewsCount = _.random(10, 999);
+				const picture = `/img/${_.random(1, 10)}.jpg`;
+				await db.query(`INSERT INTO posts (title, text, created, author, category, views_count, comments_count, picture) values($1, $2, $3, $4, $5, $6, 0, $7)`, 
+				[title, text, created, author, cat.id, viewsCount, picture]);
 			}
 		}
+
+		console.log("Created POSTS");
 	}
 
-	async createComments(commentsPerPost = 5) {
+	async createTopPosts(amount = 5) {
+		const posts = (await db.query(`SELECT id FROM posts;`)).rows;
+
+		const topPosts = [];
+
+		for(let i = 0; i < amount; i++) {
+			const postID = posts[_.random(posts.length)].id;
+
+			if(topPosts.includes(postID)) {
+				i = i - 1;
+				continue;
+			}
+
+			topPosts.push(postID);
+		}
+
+		topPosts.map(async (postID) => {
+			await db.query(`INSERT INTO collections (post_id, collection) values ($1, $2);`, [postID, "top"]);
+		})
+
+		console.log("Created TOP POSTS");
+	}
+
+	async createComments(from = 0, to = 20) {
 		const posts = (await db.query(`SELECT * FROM posts;`)).rows;
 
 		for(let post of posts) {
+			const commentsPerPost = _.random(from, to);
+
 			for(let i = 0; i <= commentsPerPost; i++) {
 				const author = users[_.random(users.length - 1)];
 				const text = comments[_.random(comments.length - 1)];
 				const created = new Date().getTime() - (_.random(31556926000));
 				await db.query(`INSERT INTO comments (author, text, created, post_id) values($1, $2, $3, $4)`, [author, text, created, post.id]);
 			}
+
+			await db.query(`UPDATE posts SET comments_count = $1 where id = $2;`, [commentsPerPost, post.id]);
 		}
+
+		console.log("Created COMMENTS");
 	}
 
 	async createReactions() {
@@ -104,27 +140,31 @@ export default class MockDB {
 			const dislikes = _.random(999);
 			await db.query(`INSERT INTO reactions (likes, dislikes, post_id) values($1, $2, $3);`, [likes, dislikes, post.id]);
 		}
+
+		console.log("Created REACTIONS");
 	}
 
 	async createAuthors() {
 		for(let i = 0; i < authors.length; i++) {
 			const name = authors[i];
-			const age = _.random(65);
+			const age = _.random(20, 65);
 			const gender = "male";
 			const city = towns[_.random(towns.length - 1)];
 			const about = texts[_.random(texts.length - 1)];
-			const picture = `pictures/profile/male/${_.random(7)}.jpg`;
+			const picture = `img/profile/male/${_.random(1, 4)}.jpg`;
 
 			await db.query(`INSERT INTO authors (name, age, gender, city, about, picture) values($1, $2, $3, $4, $5, $6);`, [name, age, gender, city, about, picture]);
 		}
 		for(let i = 0; i < femaleAuthors.length; i++) {
 			const name = femaleAuthors[i];
-			const age = _.random(65);
+			const age = _.random(20, 65);
 			const gender = "female";
 			const city = towns[_.random(towns.length - 1)];
 			const about = texts[_.random(texts.length - 1)];
-			const picture = `pictures/profile/female/${_.random(7)}.jpg`;
+			const picture = `img/profile/female/${_.random(1, 3)}.jpg`;
 			await db.query(`INSERT INTO authors (name, age, gender, city, about, picture) values($1, $2, $3, $4, $5, $6);`, [name, age, gender, city, about, picture]);
 		}
+
+		console.log("Created AUTHORS");
 	}
 }

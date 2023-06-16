@@ -21,8 +21,17 @@ create TABLE posts(
 	created BIGINT,
 	author INTEGER,
 	category INTEGER,
+	views_count INTEGER,
+	comments_count INTEGER,
+	picture VARCHAR,
 	FOREIGN KEY (category) REFERENCES categories(id),
 	FOREIGN KEY (author) REFERENCES authors(id)
+);
+
+create TABLE collections(
+	post_id INTEGER,
+	collection VARCHAR,
+	FOREIGN KEY (post_id) REFERENCES posts(id)
 );
 
 create TABLE comments(
