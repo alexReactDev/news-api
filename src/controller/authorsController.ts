@@ -15,6 +15,21 @@ class AuthorsController {
 
 		return res.send(authors);
 	}
+
+	async getByID(req: Request, res: Response) {
+		const id = req.params.id;
+		let author;
+
+		try {
+			author = await AuthorsModel.getByID(id);
+		}
+		catch(e: any) {
+			console.log(e)
+			return res.sendStatus(500)
+		}
+	
+		return res.send(author)
+	}
 }
 
 export default new AuthorsController();
