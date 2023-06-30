@@ -50,3 +50,16 @@ create TABLE reactions(
 	FOREIGN KEY (post_id) REFERENCES posts(id)
 );
  
+CREATE TABLE users(
+	id VARCHAR PRIMARY KEY,
+	last_online BIGINT
+);
+
+CREATE TABLE user_reactions(
+	id SERIAL PRIMARY KEY,
+	user_id VARCHAR,
+	post_id SERIAL,
+	reaction VARCHAR,
+	FOREIGN KEY (user_id) REFERENCES users(id),
+	FOREIGN KEY (post_id) REFERENCES posts(id)
+);
