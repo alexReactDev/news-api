@@ -48,10 +48,6 @@ class PostsModel implements IPostsModel {
 			total
 		};
 	}
-	
-	async getReactions(id: number) {
-		return (await db.query("SELECT * FROM reactions where post_id = $1;", [id])).rows[0];
-	}
 }
 
 export default new PostsModel();
