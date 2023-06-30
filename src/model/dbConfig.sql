@@ -45,8 +45,9 @@ create TABLE comments(
 
 create TABLE reactions(
 	post_id INTEGER PRIMARY KEY,
-	likes INTEGER,
-	dislikes INTEGER,
+	upvote INTEGER,
+	downvote INTEGER,
+	wow INTEGER,
 	FOREIGN KEY (post_id) REFERENCES posts(id)
 );
  
