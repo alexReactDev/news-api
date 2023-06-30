@@ -14,6 +14,7 @@ const PORT = 4500;
 const app = express();
 app.use(cors());
 app.use(cookieParser());
+app.use(express.json());
 
 if(process.env.MODE = "DEV") {
 	app.use(throttleMiddleware);

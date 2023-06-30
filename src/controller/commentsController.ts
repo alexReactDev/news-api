@@ -25,6 +25,24 @@ class CommentsController {
 			page: page + 1
 		});
 	}
+
+	async createComment(req: Request, res: Response) {
+		const postId = +req.params.post;
+		const { author, text } = req.body;
+		const created = new Date().getTime();
+
+		if(!author || !text) return res.sendStatus(400);
+
+		try {
+			await model.createForPost(postId, author, text, created);
+		}
+		catch(e: any) {
+			console.log(e);
+			return res.sendStatus(500)
+		}
+	
+		return res.sendStatus(201);
+	}
 }
 
 export default new CommentsController();

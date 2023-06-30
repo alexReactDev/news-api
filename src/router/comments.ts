@@ -6,5 +6,6 @@ import CommentsController from "../controller/commentsController.js";
 const router: RouterType = new (Router as any)();
 
 router.get("/:post", CommentsController.getByPost);
+router.post("/:post", CommentsController.createComment);
 
 export default router;

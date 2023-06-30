@@ -10,6 +10,13 @@ class CommentsModel {
 			total
 		}
 	}
+
+	async createForPost(id: number, author: string, text: string, created: number) {
+		const createdComment = (await db.query("INSERT INTO comments (author, text, created, post_id) values ($1, $2, $3, $4) RETURNING *;", [author, text, created, id])).rows[0];
+		await db.query("UPDATE posts SET comments_count = comments_count + 1 where id = $1;", [id]);
+
+		return createdComment;
+	}
 }
 
 export default new CommentsModel();
